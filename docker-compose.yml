@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend-data:/app/app/uploads
+      - backend-models:/app/app/models
+    environment:
+      - SECRET_KEY=talk2mind_super_secure_secret_key_change_me_in_production
+      - DATABASE_URL=sqlite:///app/talk2mind.db
+    restart: always
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  backend-data:
+  backend-models:
