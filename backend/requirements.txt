@@ -7,9 +7,9 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.1.2
 python-multipart==0.0.9
-scikit-learn==1.4.1.post1
-numpy==2.0.0
-pandas==2.2.1
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.5.2
 librosa==0.10.1
 soundfile==0.12.1
 opencv-python==4.9.0.80
