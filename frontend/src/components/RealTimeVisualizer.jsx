@@ -93,7 +93,7 @@ export default function RealTimeVisualizer({ token, API_BASE_URL, sessionId, isR
           setActiveEmotions(data.probabilities);
           
           // Map backend face coordinates (relative/absolute) to video element client bounds
-          const box = data.details.box; // [x, y, w, h]
+          const box = data.details?.box; // [x, y, w, h] — optional chaining guards against missing details
           if (box && videoRef.current) {
             const videoElem = videoRef.current;
             const clientWidth = videoElem.clientWidth;

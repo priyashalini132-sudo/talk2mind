@@ -185,10 +185,10 @@ def submit_assessment(
         session_id=session_id,
         facial_emotion=facial_result.get("emotion") if facial_result.get("detected") else None,
         speech_emotion=speech_result.get("emotion") if speech_result.get("success") else None,
-        phq9=questionnaire.phq9.get("total", 0) if questionnaire.phq9 else None,
-        gad7=questionnaire.gad7.get("total", 0) if questionnaire.gad7 else None,
-        pss=questionnaire.pss.get("total", 0) if questionnaire.pss else None,
-        who5=questionnaire.who5.get("total", 0) if questionnaire.who5 else None,
+        phq9=sum(questionnaire.phq9) if questionnaire.phq9 else None,
+        gad7=sum(questionnaire.gad7) if questionnaire.gad7 else None,
+        pss=sum(questionnaire.pss) if questionnaire.pss else None,
+        who5=sum(questionnaire.who5) if questionnaire.who5 else None,
     )
 
     # Update user streak

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { registerToastHandler, showToast } from './toast';
 import {
   LayoutDashboard, Activity, MessageSquare, User, LogOut,
   BrainCircuit, Menu, X, FileText, Flame, ChevronRight
@@ -10,21 +11,17 @@ import Chatbot from './components/Chatbot';
 import Profile from './components/Profile';
 import AssessmentResult from './components/AssessmentResult';
 
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
 // ── Toast System ──────────────────────────────────────────────────────────────
-let _addToast = null;
-export function showToast(message, type = 'info') {
-  if (_addToast) _addToast(message, type);
-}
 
 function ToastContainer() {
   const [toasts, setToasts] = useState([]);
-  _addToast = (message, type) => {
+  registerToastHandler((message, type) => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3500);
-  };
+  });
   if (!toasts.length) return null;
   return (
     <div className="toast-container">
@@ -42,22 +39,22 @@ function ToastContainer() {
 
 // ── Nav Items Config ──────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { id: 'dashboard',  label: 'Dashboard',      icon: LayoutDashboard },
-  { id: 'assessment', label: 'New Assessment',  icon: Activity },
-  { id: 'chatbot',    label: 'Wellness Chat',   icon: MessageSquare },
-  { id: 'reports',    label: 'Reports',         icon: FileText },
-  { id: 'profile',    label: 'Profile & History', icon: User },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'assessment', label: 'New Assessment', icon: Activity },
+  { id: 'chatbot', label: 'Wellness Chat', icon: MessageSquare },
+  { id: 'reports', label: 'Reports', icon: FileText },
+  { id: 'profile', label: 'Profile & History', icon: User },
 ];
 
 // ── Classification Badge Helper ───────────────────────────────────────────────
 function getClassBadgeClass(c) {
   if (!c) return '';
-  if (c === 'Healthy')          return 'badge-healthy';
-  if (c === 'Mild Stress')      return 'badge-mild';
-  if (c === 'Moderate Stress')  return 'badge-moderate';
-  if (c === 'High Stress')      return 'badge-high';
-  if (c === 'Anxiety Risk')     return 'badge-anxiety';
-  if (c === 'Depression Risk')  return 'badge-depression';
+  if (c === 'Healthy') return 'badge-healthy';
+  if (c === 'Mild Stress') return 'badge-mild';
+  if (c === 'Moderate Stress') return 'badge-moderate';
+  if (c === 'High Stress') return 'badge-high';
+  if (c === 'Anxiety Risk') return 'badge-anxiety';
+  if (c === 'Depression Risk') return 'badge-depression';
   return '';
 }
 
@@ -72,8 +69,8 @@ function ReportsPage({ token, API_BASE_URL }) {
   useEffect(() => {
     const headers = { Authorization: `Bearer ${token}` };
     Promise.all([
-      fetch(`${API_BASE_URL}/reports/weekly`,   { headers }).then(r => r.ok ? r.json() : null),
-      fetch(`${API_BASE_URL}/reports/monthly`,  { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE_URL}/reports/weekly`, { headers }).then(r => r.ok ? r.json() : null),
+      fetch(`${API_BASE_URL}/reports/monthly`, { headers }).then(r => r.ok ? r.json() : null),
       fetch(`${API_BASE_URL}/reports/all-time`, { headers }).then(r => r.ok ? r.json() : null),
     ]).then(([w, m, a]) => {
       setWeekly(w); setMonthly(m); setAllTime(a);
@@ -113,10 +110,10 @@ function ReportsPage({ token, API_BASE_URL }) {
       ) : (
         <div className="stagger-children" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
           {[
-            { label: 'Total Sessions',  value: data.total_assessments, color: '#818cf8' },
-            { label: 'Average Score',   value: data.average_score ?? data.lifetime_average, color: '#34d399' },
-            { label: 'Best Score',      value: data.best_score ?? data.all_time_best, color: '#22d3ee' },
-            { label: 'Trend',           value: data.trend ?? 'N/A', color: '#fbbf24', isText: true },
+            { label: 'Total Sessions', value: data.total_assessments, color: '#818cf8' },
+            { label: 'Average Score', value: data.average_score ?? data.lifetime_average, color: '#34d399' },
+            { label: 'Best Score', value: data.best_score ?? data.all_time_best, color: '#22d3ee' },
+            { label: 'Trend', value: data.trend ?? 'N/A', color: '#fbbf24', isText: true },
           ].map((m, i) => (
             <div key={i} className="glass-panel metric-card">
               <div className="metric-label">{m.label}</div>
